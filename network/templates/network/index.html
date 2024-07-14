@@ -1,5 +1,33 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
-    TODO
+    <h3 class="mb-3">
+        All Posts
+    </h3>
+    {% for post in posts %}
+        <div class="card mb-2">
+            <div class="card-body">
+                <h6 class="card-title">
+                    {{ post.poster }}
+                </h6>
+                <p class="card-text">
+                    {{ post.body }}
+                </p>
+                <div class="d-flex justify-content-between">
+                    <span>
+                        <small class="text-muted">
+                            {{ post.timestamp }}
+                        </small>
+                    </span>
+                    <span>
+                        0
+                    </span>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div>
+            There are no posts yet.
+        </div>
+    {% endfor %}
 {% endblock %}
