@@ -7,7 +7,7 @@
     {% if user.is_authenticated %}
         <div class="card mb-2">
             <div class="card-body">
-                <form action="" method="post">
+                <form action="{% url 'index' %}" method="post">
 {% csrf_token %}
                     <div class="form-group">
                         <h5 class="card-title">

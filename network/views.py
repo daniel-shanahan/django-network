@@ -8,6 +8,12 @@ from .models import User, Post
 
 
 def index(request):
+    if request.method == "POST" and request.user.is_authenticated:
+        poster = request.user
+        body = request.POST["new-post"]
+        new_post = Post(poster=poster, body=body)
+        new_post.save()
+
     posts = Post.objects.all().order_by("-timestamp")
 
     return render(request, "network/index.html", {"title": "All Posts", "posts": posts})
