@@ -71,3 +71,25 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
+
+
+def profile(request, id):
+    username = User.objects.get(pk=id).username
+    followers = 0
+    following = 0
+    posts = Post.objects.filter(poster=id).order_by("-timestamp")
+    is_current_user = request.user.id == id
+    is_following = False
+
+    return render(
+        request,
+        "network/profile.html",
+        {
+            "username": username,
+            "followers": followers,
+            "following": following,
+            "posts": posts,
+            "is_current_user": is_current_user,
+            "is_following": is_following,
+        },
+    )

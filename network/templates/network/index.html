@@ -28,7 +28,10 @@
         <div class="card mb-2">
             <div class="card-body">
                 <h6 class="card-title">
-                    {{ post.poster }}
+                    <a href="{% url 'profile' post.poster.id %}"
+                       class="text-reset text-decoration-none">
+                        {{ post.poster }}
+                    </a>
                 </h6>
                 <p class="card-text">
                     {{ post.body }}
