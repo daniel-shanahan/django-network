@@ -110,3 +110,16 @@ def follow(request, id):
             current_user.following.add(profile_user)
 
     return HttpResponseRedirect(reverse("profile", args=(id,)))
+
+
+@login_required
+def following(request):
+    posts = Post.objects.filter(poster__followers=request.user.id).order_by(
+        "-timestamp"
+    )
+
+    return render(
+        request,
+        "network/following.html",
+        {"title": "Following", "posts": posts},
+    )
