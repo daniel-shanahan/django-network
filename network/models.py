@@ -10,6 +10,9 @@ class User(AbstractUser):
 
 class Post(models.Model):
     poster = models.ForeignKey("User", on_delete=models.CASCADE, related_name="posts")
+    liked_by = models.ManyToManyField(
+        "User", blank=True, null=True, related_name="likes"
+    )
     body = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
 

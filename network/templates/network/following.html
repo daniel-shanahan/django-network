@@ -23,7 +23,10 @@
             </small>
           </span>
           <span>
-            0
+            <button class="btn" aria-label="Like">
+              <i class="bi bi-heart-fill text-danger"></i>
+            </button>
+              {{ post.liked_by.count }}
           </span>
         </div>
       </div>

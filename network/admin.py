@@ -9,6 +9,7 @@ class UserAdmin(admin.ModelAdmin):
 
 class PostAdmin(admin.ModelAdmin):
     list_display = ("poster", "body", "timestamp")
+    filter_horizontal = ("liked_by",)
 
 
 admin.site.register(User, UserAdmin)

@@ -46,9 +46,10 @@
               {{ post.timestamp }}
             </small>
           </span>
-          <span>
-            0
-          </span>
+          <button class="btn" aria-label="Like">
+            <i class="bi bi-heart-fill text-danger"></i>
+            {{ post.liked_by.count }}
+          </button>
         </div>
       </div>
     </div>
