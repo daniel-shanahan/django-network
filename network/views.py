@@ -93,13 +93,20 @@ def profile(request, id):
             "posts": Post.objects.filter(poster=id).order_by("-timestamp"),
             "is_current_user": request.user.id == id,
             "is_following": is_following,
+            "id": id,
         },
     )
 
 
 @login_required
 def follow(request, id):
-    if request.method == "POST":
-        pass
+    if request.method == "POST" and request.user.id != id:
+        current_user = User.objects.get(pk=request.user.id)
+        profile_user = User.objects.get(pk=id)
+
+        if current_user.following.contains(profile_user):
+            current_user.following.remove(profile_user)
+        else:
+            current_user.following.add(profile_user)
 
     return HttpResponseRedirect(reverse("profile", args=(id,)))

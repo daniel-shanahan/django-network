@@ -14,14 +14,14 @@
       </p>
     </div>
     {% if user.is_authenticated and not is_current_user %}
-      <form action="#" method="post">
+      <form action="{% url 'follow' id %}" method="post">
 {% csrf_token %}
         {% if not is_following %}
-          <button type="submit" value="follow" class="btn btn-primary">
+          <button type="submit" class="btn btn-primary">
             Follow
           </button>
         {% else %}
-          <button type="submit" value="unfollow" class="btn btn-secondary">
+          <button type="submit" class="btn btn-secondary">
             Unfollow
           </button>
         {% endif %}
