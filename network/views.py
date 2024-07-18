@@ -76,7 +76,12 @@ def register(request):
 
 def profile(request, id):
     profile_user = User.objects.get(pk=id)
-    current_user = User.objects.get(pk=request.user.id)
+
+    is_following = (
+        User.objects.get(pk=request.user.id).following.contains(profile_user)
+        if request.user.is_authenticated
+        else False
+    )
 
     return render(
         request,
@@ -87,7 +92,7 @@ def profile(request, id):
             "following": profile_user.following.count(),
             "posts": Post.objects.filter(poster=id).order_by("-timestamp"),
             "is_current_user": request.user.id == id,
-            "is_following": current_user.following.contains(profile_user),
+            "is_following": is_following,
         },
     )
 
