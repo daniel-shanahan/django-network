@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
@@ -74,22 +75,26 @@ def register(request):
 
 
 def profile(request, id):
-    username = User.objects.get(pk=id).username
-    followers = 0
-    following = 0
-    posts = Post.objects.filter(poster=id).order_by("-timestamp")
-    is_current_user = request.user.id == id
-    is_following = False
+    profile_user = User.objects.get(pk=id)
+    current_user = User.objects.get(pk=request.user.id)
 
     return render(
         request,
         "network/profile.html",
         {
-            "username": username,
-            "followers": followers,
-            "following": following,
-            "posts": posts,
-            "is_current_user": is_current_user,
-            "is_following": is_following,
+            "username": profile_user.username,
+            "followers": profile_user.followers.count(),
+            "following": profile_user.following.count(),
+            "posts": Post.objects.filter(poster=id).order_by("-timestamp"),
+            "is_current_user": request.user.id == id,
+            "is_following": current_user.following.contains(profile_user),
         },
     )
+
+
+@login_required
+def follow(request, id):
+    if request.method == "POST":
+        pass
+
+    return HttpResponseRedirect(reverse("profile", args=(id,)))
