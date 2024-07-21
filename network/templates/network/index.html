@@ -17,6 +17,11 @@
                         </h5>
                         <textarea id="new-post" name="new-post" rows="2" class="form-control"></textarea>
                     </div>
+                    {% if message %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endif %}
                     <button type="submit" class="btn btn-primary d-block">
                         Post
                     </button>

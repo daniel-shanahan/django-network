@@ -10,8 +10,21 @@ from .models import User, Post
 
 def index(request):
     if request.method == "POST" and request.user.is_authenticated:
+        body = request.POST["new-post"].strip()
+
+        if body == "":
+            # Post body cannot be empty
+            return render(
+                request,
+                "network/index.html",
+                {
+                    "title": "All Posts",
+                    "posts": Post.objects.all().order_by("-timestamp"),
+                    "message": "Post can not be empty.",
+                },
+            )
+
         poster = request.user
-        body = request.POST["new-post"]
         new_post = Post(poster=poster, body=body)
         new_post.save()
 
