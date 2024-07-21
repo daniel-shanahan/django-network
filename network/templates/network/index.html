@@ -48,9 +48,22 @@
                         </small>
                     </span>
                     <span>
-                        <button class="btn" aria-label="Like">
-                            <i class="bi bi-heart-fill text-danger"></i>
-                        </button>
+                        {% if user.is_authenticated %}
+                            {% if user in post.liked_by.all %}
+                                <button class="btn" id="like" aria-label="Unlike">
+                                    <i class="bi bi-heart-fill text-danger"></i>
+                                </button>
+                            {% else %}
+ 
+                                <button class="btn" id="like" aria-label="Like">
+                                    <i class="bi bi-heart text-danger"></i>
+                                </button>
+                            {% endif %}
+                        {% else %}
+                            <button class="btn" id="like" aria-label="Like" disabled>
+                                <i class="bi bi-heart-fill text-danger"></i>
+                            </button>
+                        {% endif %}
                         {{ post.liked_by.count }}
                     </span>
                 </div>
