@@ -51,17 +51,21 @@
                     <span>
                         {% if user.is_authenticated %}
                             {% if user in post.liked_by.all %}
-                                <button class="btn" id="like" aria-label="Unlike">
+                                <button class="btn" id="like" data-id="{{ post.id }}" aria-label="Unlike">
                                     <i class="bi bi-heart-fill text-danger"></i>
                                 </button>
                             {% else %}
  
-                                <button class="btn" id="like" aria-label="Like">
+                                <button class="btn" id="like" data-id="{{ post.id }}" aria-label="Like">
                                     <i class="bi bi-heart text-danger"></i>
                                 </button>
                             {% endif %}
                         {% else %}
-                            <button class="btn" id="like" aria-label="Like" disabled>
+                            <button class="btn"
+                                    id="like"
+                                    data-id="{{ post.id }}"
+                                    aria-label="Like"
+                                    disabled>
                                 <i class="bi bi-heart text-danger"></i>
                             </button>
                         {% endif %}

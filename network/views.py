@@ -1,9 +1,11 @@
+import json
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import User, Post
 
@@ -136,3 +138,31 @@ def following(request):
         "network/following.html",
         {"title": "Following", "posts": posts},
     )
+
+
+@csrf_exempt
+@login_required
+def post(request, post_id):
+    # Query for requested post
+    try:
+        post = Post.objects.get(pk=post_id)
+    except Post.DoesNotExist:
+        return JsonResponse({"error": "Post not found."}, status=404)
+
+    # Update whether the post has been edited or liked
+    if request.method == "PUT":
+        data = json.loads(request.body)
+        current_user = User.objects.get(pk=request.user.id)
+
+        # Update whether the user has liked or unliked the post
+        if data.get("like") is not None:
+            if post.liked_by.contains(current_user):
+                post.liked_by.remove(current_user)
+            else:
+                post.liked_by.add(current_user)
+
+        post.save()
+        return HttpResponse(status=204)
+
+    else:
+        return JsonResponse({"error": "PUT request required."}, status=400)
