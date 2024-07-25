@@ -165,6 +165,15 @@ def post(request, post_id):
             else:
                 post.liked_by.add(current_user)
 
+        # Update whether the poster has changed the post body
+        if data.get("body") is not None:
+            if current_user == post.poster:
+                post.body = data["body"]
+            else:
+                return JsonResponse(
+                    {"error": "Cannot edit another user's post."}, status=403
+                )
+
         post.save()
         return HttpResponse(status=204)
 
