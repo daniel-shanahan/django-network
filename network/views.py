@@ -149,6 +149,10 @@ def post(request, post_id):
     except Post.DoesNotExist:
         return JsonResponse({"error": "Post not found."}, status=404)
 
+    # Return email contents
+    if request.method == "GET":
+        return JsonResponse(post.serialize())
+
     # Update whether the post has been edited or liked
     if request.method == "PUT":
         data = json.loads(request.body)
@@ -165,4 +169,4 @@ def post(request, post_id):
         return HttpResponse(status=204)
 
     else:
-        return JsonResponse({"error": "PUT request required."}, status=400)
+        return JsonResponse({"error": "GET or PUT request required."}, status=400)
