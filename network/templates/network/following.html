@@ -1,4 +1,5 @@
 {% extends "network/layout.html" %}
+{% load static %}
 
 {% block body %}
   <h3 class="mb-3">
@@ -23,10 +24,26 @@
             </small>
           </span>
           <span>
-            <button class="btn" aria-label="Like">
-              <i class="bi bi-heart-fill text-danger"></i>
-            </button>
-              {{ post.liked_by.count }}
+            {% if user.is_authenticated %}
+              {% if user in post.liked_by.all %}
+                <button class="btn" id="like" data-id="{{ post.id }}" aria-label="Unlike">
+                  <i class="bi bi-heart-fill text-danger"></i>
+                </button>
+              {% else %}
+                <button class="btn" id="like" data-id="{{ post.id }}" aria-label="Like">
+                  <i class="bi bi-heart text-danger"></i>
+                </button>
+              {% endif %}
+            {% else %}
+              <button class="btn"
+                      id="like"
+                      data-id="{{ post.id }}"
+                      aria-label="Like"
+                      disabled>
+                <i class="bi bi-heart text-danger"></i>
+              </button>
+            {% endif %}
+            <span>{{ post.liked_by.count }}</span>
           </span>
         </div>
       </div>
@@ -36,4 +53,9 @@
       There are no posts yet.
     </div>
   {% endfor %}
+{% endblock %}
+
+
+{% block script %}
+  <script src="{% static 'network/posts.js' %}"></script>
 {% endblock %}
