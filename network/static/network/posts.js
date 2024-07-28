@@ -39,7 +39,6 @@ function editPost(editButton) {
 
   // Get the current body element
   const bodyElement = editButton.parentElement.nextElementSibling;
-  console.log(bodyElement.innerText);
 
   // Create elements for editing/saving new post body
   const divElement = document.createElement("div");
@@ -61,8 +60,25 @@ function editPost(editButton) {
   saveButton.className = "btn btn-primary d-block";
   saveButton.innerText = "Save";
   saveButton.onclick = function () {
-    console.log("Save clicked.");
     // Update the post body
+    fetch(`/post/${postId}`, {
+      method: "PUT",
+      body: JSON.stringify({
+        body: editBodyElement.value,
+      }),
+    }).then(() => {
+      // Get updated post
+      fetch(`/post/${postId}`)
+        .then((res) => res.json())
+        .then((post) => {
+          // Display updated post
+          bodyElement.innerText = post.body;
+          divElement.replaceWith(bodyElement);
+
+          // Show edit button
+          editButton.classList.toggle("d-none");
+        });
+    });
   };
 
   // Insert editing elements in place of the current body
