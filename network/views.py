@@ -6,8 +6,11 @@ from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
+from django.core.paginator import Paginator
 
 from .models import User, Post
+
+POSTS_PER_PAGE = 10
 
 
 def index(request):
@@ -31,8 +34,14 @@ def index(request):
         new_post.save()
 
     posts = Post.objects.all().order_by("-timestamp")
+    paginator = Paginator(posts, POSTS_PER_PAGE)
 
-    return render(request, "network/index.html", {"title": "All Posts", "posts": posts})
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    return render(
+        request, "network/index.html", {"title": "All Posts", "page_obj": page_obj}
+    )
 
 
 def login_view(request):
@@ -98,6 +107,12 @@ def profile(request, id):
         else False
     )
 
+    posts = Post.objects.filter(poster=id).order_by("-timestamp")
+    paginator = Paginator(posts, POSTS_PER_PAGE)
+
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
     return render(
         request,
         "network/profile.html",
@@ -105,7 +120,7 @@ def profile(request, id):
             "username": profile_user.username,
             "followers": profile_user.followers.count(),
             "following": profile_user.following.count(),
-            "posts": Post.objects.filter(poster=id).order_by("-timestamp"),
+            "page_obj": page_obj,
             "is_current_user": request.user.id == id,
             "is_following": is_following,
             "id": id,
@@ -132,11 +147,15 @@ def following(request):
     posts = Post.objects.filter(poster__followers=request.user.id).order_by(
         "-timestamp"
     )
+    paginator = Paginator(posts, POSTS_PER_PAGE)
+
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
 
     return render(
         request,
         "network/following.html",
-        {"title": "Following", "posts": posts},
+        {"title": "Following", "page_obj": page_obj},
     )
 
 

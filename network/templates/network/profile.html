@@ -29,63 +29,93 @@
       </form>
     {% endif %}
   </div>
-  {% for post in posts %}
-    <div class="card mb-2">
-      <div class="card-body">
-        <div class="d-flex justify-content-between">
-          <h6 class="card-title">
-            <a href="{% url 'profile' post.poster.id %}"
-               class="text-reset text-decoration-none">
-                {{ post.poster }}
-            </a>
-          </h6>
-          {% if user.is_authenticated and user.id is post.poster.id %}
-            <button class="btn btn-outline-primary btn-sm"
-                    data-id="{{ post.id }}"
-                    id="edit">
+  <div class="mb-3">
+    {% for post in page_obj %}
+      <div class="card mb-2">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <h6 class="card-title">
+              <a href="{% url 'profile' post.poster.id %}"
+                 class="text-reset text-decoration-none">
+                  {{ post.poster }}
+              </a>
+            </h6>
+            {% if user.is_authenticated and user.id is post.poster.id %}
+              <button class="btn btn-outline-primary btn-sm"
+                      data-id="{{ post.id }}"
+                      id="edit">
                 Edit
-            </button>
-          {% endif %}
-        </div>
-        <p class="card-text">
-          {{ post.body }}
-        </p>
-        <div class="d-flex justify-content-between">
-          <span>
-            <small class="text-muted">
-              {{ post.timestamp }}
-            </small>
-          </span>
-          <span>
-            {% if user.is_authenticated %}
-              {% if user in post.liked_by.all %}
-                <button class="btn" id="like" data-id="{{ post.id }}" aria-label="Unlike">
-                  <i class="bi bi-heart-fill text-danger"></i>
-                </button>
+              </button>
+            {% endif %}
+          </div>
+          <p class="card-text">
+            {{ post.body }}
+          </p>
+          <div class="d-flex justify-content-between">
+            <span>
+              <small class="text-muted">
+                {{ post.timestamp }}
+              </small>
+            </span>
+            <span>
+              {% if user.is_authenticated %}
+                {% if user in post.liked_by.all %}
+                  <button class="btn" id="like" data-id="{{ post.id }}" aria-label="Unlike">
+                    <i class="bi bi-heart-fill text-danger"></i>
+                  </button>
+                {% else %}
+                  <button class="btn" id="like" data-id="{{ post.id }}" aria-label="Like">
+                    <i class="bi bi-heart text-danger"></i>
+                  </button>
+                {% endif %}
               {% else %}
-                <button class="btn" id="like" data-id="{{ post.id }}" aria-label="Like">
+                <button class="btn"
+                        id="like"
+                        data-id="{{ post.id }}"
+                        aria-label="Like"
+                        disabled>
                   <i class="bi bi-heart text-danger"></i>
                 </button>
               {% endif %}
-            {% else %}
-              <button class="btn"
-                      id="like"
-                      data-id="{{ post.id }}"
-                      aria-label="Like"
-                      disabled>
-                <i class="bi bi-heart text-danger"></i>
-              </button>
-            {% endif %}
-            <span>{{ post.liked_by.count }}</span>
-          </span>
+              <span>{{ post.liked_by.count }}</span>
+            </span>
+          </div>
         </div>
       </div>
-    </div>
-  {% empty %}
-    <div>
+    {% empty %}
       There are no posts yet.
-    </div>
-  {% endfor %}
+    {% endfor %}
+  </div>
+  {% if page_obj.has_other_pages %}
+    <nav aria-label="Profile posts pages"
+         class="d-flex justify-content-center">
+      <ul class="pagination">
+        {% if page_obj.has_previous %}
+          <li class="page-item">
+            <a class="page-link"
+               href="?page={{ page_obj.previous_page_number }}"
+               aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+        {% endif %}
+        <li class="page-item disabled">
+          <a class="page-link" tabindex="-1" aria-disabled="true">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+          </a>
+        </li>
+        {% if page_obj.has_next %}
+          <li class="page-item">
+            <a class="page-link"
+               href="?page={{ page_obj.next_page_number }}"
+               aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+        {% endif %}
+      </ul>
+    </nav>
+  {% endif %}
 {% endblock %}
 
 
